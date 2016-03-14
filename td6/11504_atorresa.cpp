@@ -27,6 +27,7 @@ void bfs(const MatUI &graph, vector<unsigned int> &color, const unsigned int &ve
     queue<unsigned int> toVisit;
     toVisit.push(vertice);
 
+    // Simple DFS Browse the graph
     while(!toVisit.empty())
     {
         unsigned int visiting = toVisit.front();
@@ -74,6 +75,7 @@ int main()
 
         fill(color.begin(), color.end(), 0);
         int tries = 0;
+	// For each "cut" in the topo graph, we have to add a try
         for(int i = order.size() - 1; i >= 0; --i)
         {
             if(color[order[i]] == 0)

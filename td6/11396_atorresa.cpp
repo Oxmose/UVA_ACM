@@ -17,10 +17,12 @@ bool isBipart(const MatUI &graph, VecB &visited, VecUI &set, const unsigned int 
 
     visited[vertex] = true;
 
+    // Test if the adjacents nodes have the same colors
     for(unsigned int i = 0; i < graph[vertex].size(); ++i)
         if(set[graph[vertex][i]] == set[vertex])
             return false;
 
+    // Browse the adjacent nodes
     for(unsigned int i = 0; i < graph[vertex].size(); ++i)
         if(! visited[graph[vertex][i]])
             if(! isBipart(graph, visited, set, graph[vertex][i], set[vertex]))
@@ -56,6 +58,7 @@ int main()
             graph[x].push_back(y);
             graph[y].push_back(x);
         }
+        // We can make claws if the graph is bipartite
         if(isBipart(graph, visited, set, 0, 1))
             cout << "YES" << endl;
         else

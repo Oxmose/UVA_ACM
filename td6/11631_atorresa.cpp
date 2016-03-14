@@ -9,6 +9,7 @@ typedef vector<long long> VectL;
 typedef vector<bool> VectB;
 typedef vector<VectLP> MatLP;
 
+// Get the node with the minimum weight that has not been already visited
 int getMinWeight(const VectL &vertexWeight, const VectB &visited)
 {
     int min = 0;
@@ -16,6 +17,7 @@ int getMinWeight(const VectL &vertexWeight, const VectB &visited)
     bool assigned = false;
     for(unsigned int i = 0; i < vertexWeight.size(); ++i)
     {
+	// If we never assigned weight to the node
         if(!visited[i] && !assigned && vertexWeight[i] > -1)
         {
             assigned = true;
@@ -39,6 +41,7 @@ void bfsWeight(const MatLP &graph, VectL &vertexWeight, VectB &visited, unsigned
         visited[toVisit] = true;
         --toVisitCount;
 
+	// Browse th graph and adding the weight to the nodes if it is better
         for(unsigned int i = 0; i < graph[toVisit].size(); ++i)
         {
             if(!visited[graph[toVisit][i].first] && (vertexWeight[graph[toVisit][i].first] == -1 || vertexWeight[graph[toVisit][i].first] > graph[toVisit][i].second))
@@ -90,14 +93,13 @@ int main()
         vertexWeight[0] = 0;
         unsigned int toVisitCount = vertexCount;
 
+	// We get the minimum covering tree
         bfsWeight(graph, vertexWeight, visited, toVisitCount);
 
         for(unsigned int i = 0; i < vertexCount; ++i)
         {        
             maxPrice -= vertexWeight[i];
         }
-
-        
 
         cout << maxPrice << endl;
      

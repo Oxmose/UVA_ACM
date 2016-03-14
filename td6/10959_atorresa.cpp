@@ -18,10 +18,12 @@ void bfs()
     {
         unsigned int from = nextE.front();
         nextE.pop();
+	    // Browse the neightboorhoud of the vertex
         for(unsigned int i = 1; i < p; ++i)
         {
             if(graph[from][i] && !visited[i])
             {
+		    // Add +1 to the level
                 visited[i] = true;
                 gnum[i] = gnum[from] + 1;
                 nextE.push(i);

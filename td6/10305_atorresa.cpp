@@ -9,6 +9,7 @@ void dfsTopo(const MatUInt &graph, vector<unsigned int> &color, const unsigned i
 {
     color[vertice] = 1;
     
+    // Browse the graph
     for(unsigned int i = 0; i < graph[vertice].size(); ++i)
     {
         if(color[graph[vertice][i]] == 0)
@@ -16,6 +17,7 @@ void dfsTopo(const MatUInt &graph, vector<unsigned int> &color, const unsigned i
     }
 
     color[vertice] = 2;
+    // Add the order
     order.push_back(vertice);
 }
 
@@ -53,12 +55,14 @@ int main()
         vector<unsigned int> order;
         vector<unsigned int> color(tasksCount, 0);
 
+	// Make the topologic order
         for(unsigned int i = 0; i < color.size(); ++i)
         {
             if(color[i] == 0)
                 dfsTopo(adjList, color, i, order);
         }
 
+	// Print the topoligic order
         for(int i = order.size() - 1; i >= 0; --i)
         {
             if(i == 0)
