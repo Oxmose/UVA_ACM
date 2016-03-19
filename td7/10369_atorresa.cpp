@@ -55,7 +55,7 @@ void bfsWeight(const MatD &graph, VecD &vertexWeight, VecB &visited, unsigned in
 int main()
 {
     ios_base::sync_with_stdio(false);
-    cout.setf(std::ios_base::fixed, std::ios_base::floatfield);
+    cout.setf(ios_base::fixed, ios_base::floatfield);
     cout.precision(2);
 
     unsigned int cases;
