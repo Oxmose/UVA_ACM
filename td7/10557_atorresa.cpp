@@ -15,21 +15,22 @@ bool BF(const VecIP &graph, VecI &costs)
 	unsigned int visitCount = graph.size();
 	costs[0] = 0;
 
-	// Dijkstra
+
 	for(unsigned int m = 1; m < visitCount; ++m)
 	{
 		for(unsigned int i = 0; i < visitCount; ++i)
 		{
-			for(unsigned int j = 0; j < graph[j].size(); ++j)
+			for(unsigned int j = 0; j < graph[i].size(); ++j)
 			{
 				if(costs[graph[i][j].first] > costs[i] + graph[i][j].second)
 					costs[graph[i][j].first] = costs[i] + graph[i][j].second;
 			}
 		}
 	}
+
 	for(unsigned int i = 0; i < visitCount; ++i)
 	{
-		for(unsigned int j = 0; j < graph[j].size(); ++j)
+		for(unsigned int j = 0; j < graph[i].size(); ++j)
 		{
 			if(costs[graph[i][j].first] > costs[i] + graph[i][j].second)
 				return false;
@@ -67,18 +68,19 @@ int main()
 		{
 			for(unsigned int j = 0; j < graph[i].size(); ++j)
 			{
-				graph[i][j].second = 100 - energies[graph[i][j].first];
+				graph[i][j].second = -energies[graph[i][j].first];
 			}
 		}
 		VecI costs(roomsCount, INT_MAX);
 
-		bool cycle = BF(graph, costs);
+		BF(graph, costs);
 
-		cout << "COst : " << costs[roomsCount - 1] << endl;
-		if(cycle || costs[roomsCount - 1] <= 0)
-			cout << "hopeless" << endl;
-		else
+		if(costs[roomsCount - 1] < -100)
 			cout << "winnable" << endl;
+		else
+			cout << "hopeless" << endl;
+
+
     }
     return 0;
 } // main()
