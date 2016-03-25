@@ -22,7 +22,7 @@ bool BF(const VecIP &graph, VecI &costs)
 		{
 			for(unsigned int j = 0; j < graph[i].size(); ++j)
 			{
-				if(costs[graph[i][j].first] > costs[i] + graph[i][j].second)
+				if(costs[graph[i][j].first] > 0 && costs[graph[i][j].first] > costs[i] + graph[i][j].second)
 					costs[graph[i][j].first] = costs[i] + graph[i][j].second;
 			}
 		}
