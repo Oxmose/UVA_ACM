@@ -9,33 +9,40 @@
 
 using namespace std;
 
+bool dfs(const VecIP &graph, VecB &visited, const unsigned int &toVisit)
+{
+	if(toVisit == graph.size() - 1) return true;
+
+	visited[toVisit] = true;
+
+	for(unsigned int i = 0; i < graph[toVisit].size(); ++i)
+	{
+		if(!visited[graph[toVisit][i].first])
+			if(dfs(graph, visited, graph[toVisit][i].first))
+				return true;
+	}
+	return false;
+}
+
 bool BF(const VecIP &graph, VecI &costs)
 {
 	// Init
 	unsigned int visitCount = graph.size();
-	costs[0] = 0;
-
+	costs[0] = 100;
+	vector<bool> visited(visitCount, false);
 
 	for(unsigned int m = 1; m < visitCount; ++m)
-	{
 		for(unsigned int i = 0; i < visitCount; ++i)
-		{
 			for(unsigned int j = 0; j < graph[i].size(); ++j)
-			{
-				if(costs[graph[i][j].first] > 0 && costs[graph[i][j].first] > costs[i] + graph[i][j].second)
+				if(costs[i] > 0 && costs[graph[i][j].first] < costs[i] + graph[i][j].second)
 					costs[graph[i][j].first] = costs[i] + graph[i][j].second;
-			}
-		}
-	}
+
 
 	for(unsigned int i = 0; i < visitCount; ++i)
-	{
 		for(unsigned int j = 0; j < graph[i].size(); ++j)
-		{
-			if(costs[graph[i][j].first] > costs[i] + graph[i][j].second)
+			if(costs[i] > 0 && costs[graph[i][j].first] < costs[i] + graph[i][j].second && !visited[i])
 				return false;
-		}
-	}
+
 	return true;
 }
 
@@ -68,18 +75,24 @@ int main()
 		{
 			for(unsigned int j = 0; j < graph[i].size(); ++j)
 			{
-				graph[i][j].second = -energies[graph[i][j].first];
+				graph[i][j].second = energies[graph[i][j].first];
 			}
 		}
-		VecI costs(roomsCount, INT_MAX);
 
-		BF(graph, costs);
+		VecI costs(roomsCount, INT_MIN + 100001);
 
-		if(costs[roomsCount - 1] < -100)
+		if(!BF(graph, costs))
+		{
+			VecB visited(roomsCount, false);
+			if(dfs(graph, visited, 0))
+				cout << "winnable" << endl;
+			else
+				cout << "hopeless" << endl;
+		}
+		else if (costs[roomsCount - 1] > 0)
 			cout << "winnable" << endl;
 		else
 			cout << "hopeless" << endl;
-
 
     }
     return 0;
