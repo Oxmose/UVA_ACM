@@ -31,13 +31,14 @@ bool BF(const VecIP &graph, VecI &costs)
 	costs[0] = 100;
 	vector<bool> visited(visitCount, false);
 
+	// Relaxes the edges
 	for(unsigned int m = 1; m < visitCount; ++m)
 		for(unsigned int i = 0; i < visitCount; ++i)
 			for(unsigned int j = 0; j < graph[i].size(); ++j)
 				if(costs[i] > 0 && costs[graph[i][j].first] < costs[i] + graph[i][j].second)
 					costs[graph[i][j].first] = costs[i] + graph[i][j].second;
 
-
+    // Check for cycle
 	for(unsigned int i = 0; i < visitCount; ++i)
 		for(unsigned int j = 0; j < graph[i].size(); ++j)
 			if(costs[i] > 0 && costs[graph[i][j].first] < costs[i] + graph[i][j].second && !visited[i])
@@ -59,6 +60,7 @@ int main()
     	VecIP graph(roomsCount, vector<pair<int, int>>());
     	VecI energies(roomsCount);
 
+        // Get data
     	unsigned int doors;
     	for(int i = 0; i < roomsCount; ++i)
     	{
@@ -80,16 +82,18 @@ int main()
 		}
 
 		VecI costs(roomsCount, INT_MIN + 100001);
-
+        bool winnable = false;
+        // If there is an energy generator cycle
 		if(!BF(graph, costs))
 		{
+            // If we can access the end node then it is winnable
+            // Since we can just "pump" in the cycle
 			VecB visited(roomsCount, false);
 			if(dfs(graph, visited, 0))
-				cout << "winnable" << endl;
-			else
-				cout << "hopeless" << endl;
+				winnable = true;
 		}
-		else if (costs[roomsCount - 1] > 0)
+        // If no cycle and we can access the end node wi our energy
+		if (winnable || costs[roomsCount - 1] > 0)
 			cout << "winnable" << endl;
 		else
 			cout << "hopeless" << endl;
