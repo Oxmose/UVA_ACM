@@ -1,69 +1,86 @@
 #include <iostream>
 #include <vector>
+#include <climits>
+#include <cstring>
 
 using namespace std;
 
-void opt(int &intervals, int height, int width, vector<vector<int>> &altVals, vector<vector<int>> &optV, int cost)
+#define UP 60
+#define STAY 30
+#define DOWN 20
+
+int opt[10][1000];
+int windVals[10][1000];
+
+void getOpt(int interval)
 {
-    // Init or quit in case of better cost
-    if(optV[height][width] != -1 && optV[height][width] < cost) 
-        return;
-    
-    // Save the cost for current step
-    optV[height][width] = cost;
+    opt[0][0] = 0;
 
-    // If we arrived
-    if(width == intervals + 1) 
-        return;
-    
-    // Try to stay at same alt
-    opt(intervals, height, width + 1, altVals, optV, cost - altVals[height][width] + 30);
+    for(unsigned int i = 1; i < interval; ++i)
+    {
+        for(unsigned int j = 1; j < 10; ++j)
+        {
+            //if(j != 0 && opt[j][i] == 0)
+                //break;
+        
+            int stay = INT_MAX / 2;
+            int up = INT_MAX / 2;
+            int down = INT_MAX / 2;
 
-    // Try to go up if we can
-    if(height <= 9)
-        opt(intervals, height + 1, width + 1, altVals, optV, cost + altVals[height][width] + 60);
+            
+            stay = opt[j][i - 1] + STAY - windVals[j][i - 1];
+            up = opt[j - 1][i - 1] + UP - windVals[j - 1][i - 1];
+            if(j < 9)
+                down = opt[j + 1][i - 1] + DOWN - windVals[j + 1][i - 1];
+        
+            opt[j][i] = min(min(stay, up), down);
+        }
+    }
+    // Land
+    opt[0][interval] = opt[1][interval - 1] + DOWN - windVals[1][interval - 1];
+}
 
-    // Try to go down if we can
-    if(height >= 2) 
-        opt(intervals, height - 1, width + 1, altVals, optV, cost + altVals[height][width] + 20);
-} 
+
 
 int main()
 {
     int N;
     cin >> N;
-    int X;
-    bool fst = true;
-    while(cin >> X)
-    {
-	if(fst)
-	{
-		fst = false;
-	}
-	else
-		cout << endl;
-        int intervals = X / 100;
 
-        // Altitudes, for convenience added a col and a row
-        vector<vector<int>> altVal(11, vector<int>(intervals + 1));
-        
-        for(unsigned int i = 1; i <= 10; ++i)
+    bool fst = true;
+
+    int X;
+    while(cin >> X)
+    {        
+        int interval = X / 100;
+
+        for(int i = 9; i >= 0; --i)
         {
-            int val;
-            for(unsigned int j = 1; j < intervals + 1; ++j)
-            {
-                cin >> val;
-                altVal[11 - i][j] = val;
-            }
+            for(int j = 0; j < interval; ++j)
+                cin >> windVals[i][j];
         }
 
-        vector<vector<int>> optV(11, vector<int>(intervals + 2, -1));
+	/*for(unsigned int i = 0; i < 10; ++i)
+	{
+		for(unsigned int j = 0; j < interval; ++j)
+			cout << windVals[][i] << " ";
+		cout << endl;
+	}*/
 
-        // Compute opt        
-        opt(intervals, 1, 1, altVal, optV, 0);
+        for(unsigned int i = 0; i < 10; ++i)
+            for(unsigned int j = 0; j < interval; ++j)
+                opt[i][j] = INT_MAX / 2;
 
-        // Get opt
-        cout << optV[1][intervals + 1] << endl;
-    }
+        getOpt(interval);
+
+        if(fst)
+        {
+            cout << opt[0][interval] << endl;
+            fst = false;
+        }
+        else
+            cout << endl << opt[0][interval] << endl;
+        
+    }   
     return 0;
 }
